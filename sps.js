@@ -7,6 +7,7 @@ SPS.init = function() {
     SPS.common.ctx = canvas.getContext("2d");
     document.querySelector("#image_input").onchange = SPS.common.processImage;
     document.querySelector("#canvas").onclick = SPS.game.click;
+	document.querySelector("#difficulty").onchange = SPS.common.setDifficulty;
 }
 
 // Our main game module
@@ -66,7 +67,6 @@ SPS.game = {
 			for (p in possibles) {
 				if (possibles[p] == lastPiece || possibles[p].hidden) {
 					possibles.splice(p, 1);
-					console.log('removed');
 				}
 			}
 			// Choose a random one, move it, reset possibles, and assign lastPiece
@@ -91,7 +91,6 @@ SPS.game = {
 	},
 	movePiece : function(pieceToMove) {
 		// Move our piece to the empty spot and assign the empty spot to the piece's old spot
-		console.log(pieceToMove);
 		var holdX = pieceToMove.x;
 		var holdY = pieceToMove.y;
 		pieceToMove.x = SPS.game.emptyX;
@@ -165,14 +164,25 @@ SPS.game = {
 		SPS.game.tileData[0].hidden = true;
 		SPS.game.drawBoard();
 		// TODO: Make this value based on another input, maybe a range slider or some radiobuttons (easy, medium, hard, etc)
-		SPS.game.shuffle(10);
+		console.log(SPS.common.difficulty);
+		SPS.game.shuffle(SPS.common.difficulty);
 	}
 }
 
 SPS.common = {
     canvas : null,
     ctx : null,
-    // Image processing code used from here:
+	img: null,
+	difficulty: 10,
+	setDifficulty : function() {
+		SPS.common.difficulty = parseInt(document.querySelector("#difficulty").value);
+		SPS.common.ctx.drawImage(SPS.common.img, 0, 0, SPS.common.canvas.width, SPS.common.canvas.height);
+		SPS.game.readyImage();
+		document.querySelector("#canvas").onclick = null;
+		document.querySelector("#canvas").onclick = SPS.game.click;
+		
+	},
+	// Image processing code used from here:
     //	https://hacks.mozilla.org/2012/04/taking-pictures-with-the-camera-api-part-of-webapi/
     processImage : function(event) {
         var files = event.target.files,
@@ -183,25 +193,26 @@ SPS.common = {
             try {
                 var URL = window.URL || window.webkitURL;
                 var imgURL = URL.createObjectURL(file);
-                var img = new Image();
-                img.onload = function() {
-                    SPS.common.ctx.drawImage(img, 0, 0, SPS.common.canvas.width,
+                SPS.common.img = new Image();
+                SPS.common.img.onload = function() {
+                    SPS.common.ctx.drawImage(SPS.common.img, 0, 0, SPS.common.canvas.width,
                                              SPS.common.canvas.height);
 					SPS.game.readyImage();
                 }
-                img.src = imgURL;
+                SPS.common.img.src = imgURL;
                 URL.revokeObjectURL(imgURL);
             }
             catch (e) {
                 try {
                     var fileReader = new FileReader();
-                    var img = new Image();
-                    img.onload = function() {
-                        SIS.common.ctx.drawImage(img, 0, 0, SIS.common.canvas.width,
+                    SPS.common.img = new Image();
+                    SPS.common.img.onload = function() {
+						
+                        SIS.common.ctx.drawImage(SPS.common.img, 0, 0, SIS.common.canvas.width,
                                              SIS.common.canvas.height);    
                     }
                     fileReader.onload = function (event) {
-                          img.src = event.target.result;
+                          SPS.common.img.src = event.target.result;
                     };
                     fileReader.readAsDataURL(file);
                 }
