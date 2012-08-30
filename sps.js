@@ -91,6 +91,7 @@ SPS.game = {
 	},
 	movePiece : function(pieceToMove) {
 		// Move our piece to the empty spot and assign the empty spot to the piece's old spot
+		// TODO:  Would like to make this animated, maybe add like a destination x and destination y
 		var holdX = pieceToMove.x;
 		var holdY = pieceToMove.y;
 		pieceToMove.x = SPS.game.emptyX;
