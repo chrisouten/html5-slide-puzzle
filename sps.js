@@ -163,8 +163,6 @@ SPS.game = {
 		SPS.game.emptyY = 0;//SPS.game.tileData[missingIndex].y;
 		SPS.game.tileData[0].hidden = true;
 		SPS.game.drawBoard();
-		// TODO: Make this value based on another input, maybe a range slider or some radiobuttons (easy, medium, hard, etc)
-		console.log(SPS.common.difficulty);
 		SPS.game.shuffle(SPS.common.difficulty);
 	}
 }
@@ -195,7 +193,7 @@ SPS.common = {
                 var imgURL = URL.createObjectURL(file);
                 SPS.common.img = new Image();
                 SPS.common.img.onload = function() {
-                    SPS.common.ctx.drawImage(SPS.common.img, 0, 0, SPS.common.canvas.width,
+					SPS.common.ctx.drawImage(SPS.common.img, 0, 0, SPS.common.canvas.width,
                                              SPS.common.canvas.height);
 					SPS.game.readyImage();
                 }
@@ -207,8 +205,7 @@ SPS.common = {
                     var fileReader = new FileReader();
                     SPS.common.img = new Image();
                     SPS.common.img.onload = function() {
-						
-                        SIS.common.ctx.drawImage(SPS.common.img, 0, 0, SIS.common.canvas.width,
+                        SPS.common.ctx.drawImage(SPS.common.img, 0, 0, SIS.common.canvas.width,
                                              SIS.common.canvas.height);    
                     }
                     fileReader.onload = function (event) {
